@@ -1,4 +1,6 @@
 import static spark.Spark.*;
+
+import Rooms.Room;
 import Rooms.RoomManager;
 
 public class main {
@@ -7,8 +9,11 @@ public class main {
 
         port(9000);
         get("/port", (req, res) -> {
+            Room active = roomManager.GetActiveRoom();
             res.type("application/json");
-            return "{\"port\":\"9000\"}";
+
+            return String.format("{\"port\":\"%s\"}", Integer.toString(active.getPort()));
         });
+
     }
 }

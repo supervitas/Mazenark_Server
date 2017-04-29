@@ -25,7 +25,7 @@ public class Room {
         return false;
     }
 
-    boolean CanAddPlayer(){
+    boolean CanAddPlayer() {
         return playersCount < maxPlayers && !inGame;
     }
 

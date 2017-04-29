@@ -1,13 +1,14 @@
 package Rooms;
 
 import java.io.Console;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by nikolaev on 25.04.17.
  */
 public class RoomManager {
-    private List<Room> activeRooms;
+    private List<Room> activeRooms = new ArrayList<>();
     private int roomsCount = 0;
     private int roomLimit;
 
@@ -15,7 +16,6 @@ public class RoomManager {
 
     public RoomManager(int roomLimit) {
         this.roomLimit = roomLimit;
-
         for (int i = 0; i < this.roomLimit; i++) {
             if(CreateRoom(roomsStartPort)) {
                 roomsStartPort++;
@@ -33,13 +33,12 @@ public class RoomManager {
                 maxPlayersInPreviousRoom = room.getPlayersCount();
                 suitableRoom = room;
             }
+            if (suitableRoom == null && room.CanAddPlayer()) {
+                suitableRoom = room;
+            }
         }
-        // if null - all rooms are ocupied;
-        return suitableRoom;
-    }
 
-    public List<Room> GetActiveRooms(){
-        return activeRooms;
+        return suitableRoom;
     }
 
     private void AddRoom(Room room){
