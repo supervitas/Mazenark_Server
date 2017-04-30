@@ -5,8 +5,13 @@ import Rooms.RoomManager;
 
 public class main {
     public static void main(String[] args) {
-        RoomManager roomManager = new RoomManager(20);
+        //Initialisation
         port(9000);
+        threadPool(Runtime.getRuntime().availableProcessors());
+
+
+        RoomManager roomManager = new RoomManager(5);
+
 
         path("/api", () -> {
             before("/*", (q, a) -> a.type("application/json"));

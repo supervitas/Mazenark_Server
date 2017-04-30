@@ -12,7 +12,7 @@ public class RoomManager {
     private int roomsCount = 0;
     private int roomLimit;
 
-    private int roomsStartPort = 10000;
+    private int roomsStartPort = 8000;
 
     public RoomManager(int roomLimit) {
         this.roomLimit = roomLimit;
@@ -41,13 +41,9 @@ public class RoomManager {
         return suitableRoom;
     }
 
-    private void AddRoom(Room room){
-          activeRooms.add(room);
-    }
-
     private boolean CreateRoom(int port) {
         if (roomsCount < roomLimit) {
-            AddRoom(new Room(port, roomsCount++));
+            activeRooms.add(new Room(port, roomsCount++));
             return true;
         }
         return false;
