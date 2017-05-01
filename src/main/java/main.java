@@ -24,7 +24,7 @@ public class main {
                 return String.format("{\"port\":\"%s\"}", Integer.toString(active.getPort()));
             });
 
-            delete("/room", (req, res) -> {
+            delete("/room/player", (req, res) -> {
                 //todo parse json and get roomID from which player lefted
 //                Room room = roomManager.GetRoomById(res.)
                 return "{\"status\":\"OK\"}";
