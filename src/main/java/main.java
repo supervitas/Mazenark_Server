@@ -1,4 +1,6 @@
 import static spark.Spark.*;
+import static spark.route.HttpMethod.delete;
+
 
 import Rooms.Room;
 import Rooms.RoomManager;
@@ -18,8 +20,14 @@ public class main {
 
             get("/port", (req, res) -> {
                 Room active = roomManager.GetActiveRoom();
-
+                active.AddPlayer();
                 return String.format("{\"port\":\"%s\"}", Integer.toString(active.getPort()));
+            });
+
+            delete("/room", (req, res) -> {
+                //todo parse json and get roomID from which player lefted
+//                Room room = roomManager.GetRoomById(res.)
+                return "{\"status\":\"OK\"}";
             });
 
             post("/gameresult", (req, res) -> "{\"status\":\"OK\"}");

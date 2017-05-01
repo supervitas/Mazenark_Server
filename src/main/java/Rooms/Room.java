@@ -25,9 +25,10 @@ public class Room {
     }
 
     //this method is platform dependent - https://docs.unity3d.com/Manual/CommandLineArguments.html
-    private  void CreateUnityInstance() {
+    private void CreateUnityInstance() {
 
-        String[] command = {"./test", "-batchmode", "-nographics", "-server", "true", "-port", Integer.toString(this.port)};
+        String[] command = {"./test", "-batchmode", "-nographics", "-server", "true",
+                "-port", Integer.toString(this.port), "-instanceid", Integer.toString(this.roomID)};
         ProcessBuilder probuilder = new ProcessBuilder( command ).inheritIO();
 
         // change this to yours build location
@@ -88,5 +89,8 @@ public class Room {
 
     public int getPort() {
         return port;
+    }
+    public int getRoomID() {
+        return roomID;
     }
 }

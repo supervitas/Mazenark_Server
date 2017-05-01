@@ -41,6 +41,15 @@ public class RoomManager {
         return suitableRoom;
     }
 
+    public Room GetRoomById(int id) {
+        for (Room room : activeRooms) {
+            if(room.getRoomID() == id){
+                return room;
+            }
+        }
+        return null;
+    }
+
     private boolean CreateRoom(int port) {
         if (roomsCount < roomLimit) {
             activeRooms.add(new Room(port, roomsCount++));
@@ -48,4 +57,5 @@ public class RoomManager {
         }
         return false;
     }
+
 }
