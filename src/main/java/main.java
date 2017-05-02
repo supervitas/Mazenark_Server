@@ -2,6 +2,7 @@ import static spark.Spark.*;
 import static spark.route.HttpMethod.delete;
 
 
+import Constants.Response;
 import Rooms.Room;
 import Rooms.RoomManager;
 import org.json.JSONObject;
@@ -20,7 +21,6 @@ public class main {
             before("/*", (req, res) -> res.type("application/json"));
 
             get("/getRoom", (req, res) -> {
-
                 Room active = roomManager.GetActiveRoom();
                 if(active != null) {
                     active.AddPlayer();
@@ -31,6 +31,16 @@ public class main {
                 }
             });
 
+            post("/gameStarted", (req, res) -> {
+                JSONObject obj = new JSONObject(req.body());
+                int roomId = Integer.parseInt(obj.getString("room"));
+                Room room = roomManager.GetRoomById(roomId);
+                if(room != null) {
+                    room.SetInGame(true);
+                }
+                return Response.OK;
+            });
+
             post("/room/playerLeft", (req, res) -> {
                 JSONObject obj = new JSONObject(req.body());
                 int roomId = Integer.parseInt(obj.getString("room"));
@@ -38,7 +48,7 @@ public class main {
                 if(room != null) {
                     room.RemovePlayer();
                 }
-                return "{\"status\":\"OK\"}";
+                return Response.OK;
             });
 
             post("/gameresult", (req, res) -> "{\"status\":\"OK\"}");

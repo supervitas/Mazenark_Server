@@ -23,6 +23,10 @@ public class Room {
         new Thread(this::CreateUnityInstance).run();
     }
 
+    public void SetInGame(boolean inGame){
+        this.inGame = inGame;
+    }
+
     //this method is platform dependent - https://docs.unity3d.com/Manual/CommandLineArguments.html
     private void CreateUnityInstance() {
 
