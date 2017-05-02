@@ -38,18 +38,7 @@ public class Room {
         probuilder.directory(new File("/Users/nikolaev/Desktop/test.app/Contents/MacOS"));
 
         try {
-            Process process = probuilder.start();
-            //Read out dir output
-            InputStream is = process.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String line;
-            System.out.printf("Output of running %s is:\n",
-                    Arrays.toString(command));
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-
+            probuilder.start();
         } catch (Exception e) {
           e.printStackTrace();
         }
