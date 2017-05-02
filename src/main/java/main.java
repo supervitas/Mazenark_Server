@@ -41,6 +41,17 @@ public class main {
                 return Response.OK;
             });
 
+            post("/gameEnded", (req, res) -> {
+                JSONObject obj = new JSONObject(req.body());
+                int roomId = Integer.parseInt(obj.getString("room"));
+                Room room = roomManager.GetRoomById(roomId);
+                if(room != null) {
+                    room.SetInGame(false);
+                    room.RemoveAllPlayers();
+                }
+               return Response.OK;
+            });
+
             post("/room/playerLeft", (req, res) -> {
                 JSONObject obj = new JSONObject(req.body());
                 int roomId = Integer.parseInt(obj.getString("room"));
@@ -51,7 +62,7 @@ public class main {
                 return Response.OK;
             });
 
-            post("/gameresult", (req, res) -> "{\"status\":\"OK\"}");
+            post("/gameresult", (req, res) -> Response.OK);
         });
 
 

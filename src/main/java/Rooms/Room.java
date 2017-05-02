@@ -75,6 +75,10 @@ public class Room {
         return false;
     }
 
+    public void RemoveAllPlayers() {
+        playersCount = 0;
+    }
+
 
     int getPlayersCount() {
         return playersCount;
