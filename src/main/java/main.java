@@ -26,7 +26,7 @@ public class main {
 
             post("/room/playerLeft", (req, res) -> {
                 //todo parse json and get roomID from which player lefted  json: {room : instanceId};
-//                Room room = roomManager.GetRoomById(res.)
+//                Room room = roomManager.GetRoomById(res.).RemovePlayer();
                 return "{\"status\":\"OK\"}";
             });
 

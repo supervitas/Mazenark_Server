@@ -72,16 +72,6 @@ public class Room {
         return false;
     }
 
-    public void PlayerReady() {
-        readyPlayers++;
-        if(readyPlayers == playersCount){
-            inGame = true;
-        }
-    }
-
-    public void PlayerUnReady(){
-        readyPlayers--;
-    }
 
     int getPlayersCount() {
         return playersCount;
@@ -90,7 +80,7 @@ public class Room {
     public int getPort() {
         return port;
     }
-    public int getRoomID() {
+    int getRoomID() {
         return roomID;
     }
 }
