@@ -13,7 +13,7 @@ public class main {
         threadPool(Runtime.getRuntime().availableProcessors());
 
 
-        RoomManager roomManager = new RoomManager(0);
+        RoomManager roomManager = new RoomManager(1);
 
 
         path("/api", () -> {
