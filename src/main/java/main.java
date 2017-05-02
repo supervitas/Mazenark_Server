@@ -4,6 +4,7 @@ import static spark.route.HttpMethod.delete;
 
 import Rooms.Room;
 import Rooms.RoomManager;
+import org.json.JSONObject;
 
 public class main {
     public static void main(String[] args) {
@@ -18,7 +19,7 @@ public class main {
         path("/api", () -> {
             before("/*", (req, res) -> res.type("application/json"));
 
-            get("/port", (req, res) -> {
+            get("/getRoom", (req, res) -> {
                 Room active = roomManager.GetActiveRoom();
                 if(active != null) {
                     active.AddPlayer();
@@ -30,8 +31,12 @@ public class main {
             });
 
             post("/room/playerLeft", (req, res) -> {
-                //todo parse json and get roomID from which player lefted  json: {room : instanceId};
-//                Room room = roomManager.GetRoomById(res.).RemovePlayer();
+                JSONObject obj = new JSONObject(req.body());
+                int roomId = Integer.parseInt(obj.getString("room"));
+                Room room = roomManager.GetRoomById(roomId);
+                if(room != null) {
+                    room.RemovePlayer();
+                }
                 return "{\"status\":\"OK\"}";
             });
 

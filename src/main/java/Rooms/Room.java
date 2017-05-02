@@ -11,7 +11,6 @@ import java.util.Arrays;
  */
 public class Room {
     private int maxPlayers = 4;
-    private int readyPlayers = 0;
     private int port;
     private int playersCount = 0;
     private int roomID;
