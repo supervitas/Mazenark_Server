@@ -29,7 +29,7 @@ public class Room {
 
         String[] command = {"./test", "-batchmode", "-nographics", "-server", "true",
                 "-port", Integer.toString(this.port), "-instanceid", Integer.toString(this.roomID)};
-        ProcessBuilder probuilder = new ProcessBuilder( command ).inheritIO();
+        ProcessBuilder probuilder = new ProcessBuilder(command).inheritIO();
 
         // change this to yours build location
         probuilder.directory(new File("/Users/nikolaev/Desktop/test.app/Contents/MacOS"));

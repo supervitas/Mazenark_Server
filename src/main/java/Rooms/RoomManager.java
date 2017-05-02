@@ -37,7 +37,6 @@ public class RoomManager {
                 suitableRoom = room;
             }
         }
-
         return suitableRoom;
     }
 

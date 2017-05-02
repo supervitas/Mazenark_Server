@@ -16,12 +16,17 @@ public class main {
 
 
         path("/api", () -> {
-            before("/*", (q, a) -> a.type("application/json"));
+            before("/*", (req, res) -> res.type("application/json"));
 
             get("/port", (req, res) -> {
                 Room active = roomManager.GetActiveRoom();
-                active.AddPlayer();
-                return String.format("{\"port\":\"%s\"}", Integer.toString(active.getPort()));
+                if(active != null) {
+                    active.AddPlayer();
+                    return String.format("{\"port\":\"%s\"}", Integer.toString(active.getPort()));
+                } else {
+                    res.status(400);
+                    return "{\"error\":\"All rooms occupied\"}";
+                }
             });
 
             post("/room/playerLeft", (req, res) -> {
