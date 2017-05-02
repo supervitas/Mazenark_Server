@@ -13,20 +13,21 @@ public class main {
         threadPool(Runtime.getRuntime().availableProcessors());
 
 
-        RoomManager roomManager = new RoomManager(1);
+        RoomManager roomManager = new RoomManager(0);
 
 
         path("/api", () -> {
             before("/*", (req, res) -> res.type("application/json"));
 
             get("/getRoom", (req, res) -> {
+
                 Room active = roomManager.GetActiveRoom();
                 if(active != null) {
                     active.AddPlayer();
                     return String.format("{\"port\":\"%s\"}", Integer.toString(active.getPort()));
                 } else {
                     res.status(400);
-                    return "{\"error\":\"All rooms occupied\"}";
+                    return "{\"error\":\"Sorry, all mazes are filled\"}";
                 }
             });
 
