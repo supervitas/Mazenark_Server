@@ -20,7 +20,6 @@ public class main {
 
         path("/api", () -> {
             before("/*", (req, res) -> {
-                System.out.println(req.host());
                 res.type("application/json");
             });
 
