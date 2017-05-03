@@ -10,7 +10,7 @@ import org.json.JSONObject;
 public class main {
     public static void main(String[] args) {
         //Initialisation
-        port(8000);
+        port(7000);
         threadPool(Runtime.getRuntime().availableProcessors());
 
         RoomManager roomManager = new RoomManager(1);
@@ -19,10 +19,19 @@ public class main {
 
 
         path("/api", () -> {
-            before("/*", (req, res) -> res.type("application/json"));
+            before("/*", (req, res) -> {
+                System.out.println(req.host());
+                res.type("application/json");
+            });
 
-            path("/room", () -> {
-                get("/getRoom", roomController::GetRoom);
+            get("/getRoom", roomController::GetRoom); // public method
+
+            path("/room", () -> { // unity instance methods accepted only  from localhost
+                before("/*", (req, res) -> {
+                    if(!req.host().toLowerCase().contains("localhost")) {
+                        halt(401);
+                    }
+                });
                 post("/playerLeft", roomController::PlayerLeft);
                 post("/playerJoined", roomController::PlayerJoined);
                 post("/gameStarted", roomController::GameStarted);
