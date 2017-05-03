@@ -24,9 +24,17 @@ public class main {
                 res.type("application/json");
             });
 
-            get("/getRoom", roomController::GetRoom); // public method
+            //Public Methods
+            get("/getRoom", roomController::GetRoom);
 
-            path("/room", () -> { // unity instance methods accepted only  from localhost
+            path("/auth", () -> {
+                post("/register", (req, res) -> Response.OK); // todo
+                post("/login", (req, res) -> Response.OK); // todo
+            });
+
+
+            // Unity Server Methods
+            path("/room", () -> { // this methods sending from unity instance and accepted only from localhost
                 before("/*", (req, res) -> {
                     if(!req.host().toLowerCase().contains("localhost")) {
                         halt(401);
@@ -38,8 +46,15 @@ public class main {
                 post("/gameEnded", roomController::GameEnded);
             });
 
+            path("/game", () -> {
+                before("/*", (req, res) -> {
+                    if(!req.host().toLowerCase().contains("localhost")) {
+                        halt(401);
+                    }
+                });
+                post("/gameResults", (req, res) -> Response.OK); // todo
+            });
 
-            post("/gameresult", (req, res) -> Response.OK);
         });
 
 
