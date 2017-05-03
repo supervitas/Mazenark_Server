@@ -1,8 +1,8 @@
 import static spark.Spark.*;
-import static spark.route.HttpMethod.delete;
 
 
 import Constants.Response;
+import Controllers.RoomController;
 import Rooms.Room;
 import Rooms.RoomManager;
 import org.json.JSONObject;
@@ -10,57 +10,25 @@ import org.json.JSONObject;
 public class main {
     public static void main(String[] args) {
         //Initialisation
-        port(9000);
+        port(8000);
         threadPool(Runtime.getRuntime().availableProcessors());
 
-
         RoomManager roomManager = new RoomManager(1);
+
+        RoomController roomController = new RoomController(roomManager);
 
 
         path("/api", () -> {
             before("/*", (req, res) -> res.type("application/json"));
 
-            get("/getRoom", (req, res) -> {
-                Room active = roomManager.GetActiveRoom();
-                if(active != null) {
-                    active.AddPlayer();
-                    return String.format("{\"port\":\"%s\"}", Integer.toString(active.getPort()));
-                } else {
-                    res.status(400);
-                    return "{\"error\":\"Sorry, all mazes are filled\"}";
-                }
+            path("/room", () -> {
+                get("/getRoom", roomController::GetRoom);
+                post("/playerLeft", roomController::PlayerLeft);
+                post("/playerJoined", roomController::PlayerJoined);
+                post("/gameStarted", roomController::GameStarted);
+                post("/gameEnded", roomController::GameEnded);
             });
 
-            post("/gameStarted", (req, res) -> {
-                JSONObject obj = new JSONObject(req.body());
-                int roomId = Integer.parseInt(obj.getString("room"));
-                Room room = roomManager.GetRoomById(roomId);
-                if(room != null) {
-                    room.SetInGame(true);
-                }
-                return Response.OK;
-            });
-
-            post("/gameEnded", (req, res) -> {
-                JSONObject obj = new JSONObject(req.body());
-                int roomId = Integer.parseInt(obj.getString("room"));
-                Room room = roomManager.GetRoomById(roomId);
-                if(room != null) {
-                    room.SetInGame(false);
-                    room.RemoveAllPlayers();
-                }
-               return Response.OK;
-            });
-
-            post("/room/playerLeft", (req, res) -> {
-                JSONObject obj = new JSONObject(req.body());
-                int roomId = Integer.parseInt(obj.getString("room"));
-                Room room = roomManager.GetRoomById(roomId);
-                if(room != null) {
-                    room.RemovePlayer();
-                }
-                return Response.OK;
-            });
 
             post("/gameresult", (req, res) -> Response.OK);
         });
