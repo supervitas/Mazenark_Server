@@ -7,6 +7,8 @@ import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
+import java.util.HashMap;
+
 import static Constants.Response.*;
 
 public class AuthController {
@@ -17,21 +19,15 @@ public class AuthController {
     }
 
     public String LogIn(Request req, Response res) {
-        String username;
-        String password;
-        try {
-            JSONObject obj = new JSONObject(req.body());
-            username = obj.getString("username");
-            password = obj.getString("password");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        HashMap<String, String> userData = ParseUserData(req.body());
+        if (userData == null || !userData.containsKey("username") || !userData.containsKey("password")) {
             res.status(400);
             return BAD_JSON;
         }
 
-        User user = userManager.GetUser(username, password);
+        User user = userManager.GetUser(userData.get("username"), userData.get("password"));
         if (user == null) {
-            res.status(401);
+            res.status(400);
             return NO_USER;
         }
 
@@ -41,19 +37,13 @@ public class AuthController {
     }
 
     public String Register(Request req, Response res) {
-        String username;
-        String password;
-        try {
-            JSONObject obj = new JSONObject(req.body());
-            username = obj.getString("username");
-            password = obj.getString("password");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        HashMap<String, String> userData = ParseUserData(req.body());
+        if (userData == null || !userData.containsKey("username") || !userData.containsKey("password")) {
             res.status(400);
             return BAD_JSON;
         }
 
-        User user = userManager.Register(username, password);
+        User user = userManager.Register(userData.get("username"), userData.get("password"));
         if (user == null) {
             res.status(400);
             return USER_EXISTS;
@@ -65,21 +55,15 @@ public class AuthController {
     }
 
     public String LogOut(Request req, Response res) {
-        String username;
-        String password;
-        try {
-            JSONObject obj = new JSONObject(req.body());
-            username = obj.getString("username");
-            password = obj.getString("password");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        HashMap<String, String> userData = ParseUserData(req.body());
+        if (userData == null || !userData.containsKey("username") || !userData.containsKey("password")) {
             res.status(400);
             return BAD_JSON;
         }
 
-        User user = userManager.GetUser(username, password);
+        User user = userManager.GetUser(userData.get("username"), userData.get("password"));
         if (user == null) {
-            res.status(401);
+            res.status(400);
             return NO_USER;
         }
 
@@ -99,5 +83,18 @@ public class AuthController {
 
         return OkPlusUserInfo(user);
     }
+
+    private HashMap<String, String> ParseUserData(String data) {
+        HashMap<String, String> userData = new HashMap<>();
+        try {
+            JSONObject obj = new JSONObject(data);
+            userData.put("username", obj.getString("username"));
+            userData.put("password", obj.getString("password"));
+        } catch (JSONException e) {
+            return null;
+        }
+        return userData;
+    }
+
 
 }
