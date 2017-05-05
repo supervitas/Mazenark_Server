@@ -2,6 +2,7 @@ package Controllers;
 import static spark.Spark.*;
 
 
+import Constants.JsonUtils;
 import Constants.Response;
 import Rooms.Room;
 import Rooms.RoomManager;
@@ -39,11 +40,11 @@ public class RoomController {
     public String GetRoom(Request req, spark.Response res) {
         Room active = roomManager.GetActiveRoom();
         if(active != null) {
-            return String.format("{\"port\":\"%s\"}", Integer.toString(active.getPort()));
-        } else {
-            res.status(400);
-            return "{\"error\":\"Sorry, all mazes are filled\"}";
+            return JsonUtils.ToJson("port", Integer.toString(active.getPort()));
         }
+
+        res.status(400);
+        return JsonUtils.ToJson("error", "Sorry, all mazes are filled");
     }
 
     public String GameStarted(Request req, spark.Response res) {
