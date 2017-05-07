@@ -1,6 +1,7 @@
 package Constants;
 
 import Users.User;
+import com.sun.istack.internal.Nullable;
 import org.json.JSONObject;
 
 /**
@@ -20,6 +21,21 @@ public class Response {
             jsonObject.put("username", user.getUsername());
             jsonObject.put("id", user.getId());
             jsonObject.put("isGuest", user.isGuest());
+            if (user.getToken() != null)
+                jsonObject.put("token", user.getToken());
+            response = jsonObject.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+    public static String OkPlusSessionToken(User user) {
+        String response = OK;
+        try {
+            JSONObject jsonObject = new JSONObject(OK);
+            jsonObject.put("token", user.getToken());
             response = jsonObject.toString();
         } catch (Exception e) {
             e.printStackTrace();

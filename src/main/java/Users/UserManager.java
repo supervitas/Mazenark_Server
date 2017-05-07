@@ -2,7 +2,9 @@ package Users;
 
 import com.sun.istack.internal.Nullable;
 
+import java.math.BigInteger;
 import java.util.HashSet;
+import java.util.Random;
 
 public class UserManager {
     private HashSet<User> databaseConnector = new HashSet<>();
@@ -60,16 +62,24 @@ public class UserManager {
     }
 
     public void LogIn(User user) {
+        GenerateSessionTokenForUser(user);
         loggedInUsers.add(user);
         user.setLoggedIn(true);
     }
 
     public void LogOut(User user) {
+        user.setToken(null);
         user.setLoggedIn(false);
         loggedInUsers.remove(user);
     }
 
     public boolean IsLoggedIn(User user) {
         return loggedInUsers.contains(user);
+    }
+
+    private String GenerateSessionTokenForUser(User user) {
+        String token = new BigInteger(128, new Random()).toString(32);
+        user.setToken(token);
+        return token;
     }
 }

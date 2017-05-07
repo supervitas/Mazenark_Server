@@ -2,9 +2,11 @@ import static spark.Spark.*;
 
 
 import Constants.Response;
+import Controllers.AuthController;
 import Controllers.RoomController;
 import Rooms.Room;
 import Rooms.RoomManager;
+import Users.UserManager;
 import org.json.JSONObject;
 
 public class main {
@@ -15,8 +17,11 @@ public class main {
 
         RoomManager roomManager = new RoomManager(1);
 
+        UserManager userManager = new UserManager();
+
         RoomController roomController = new RoomController(roomManager);
 
+        AuthController authController = new AuthController(userManager);
 
         path("/api", () -> {
             before("/*", (req, res) -> {
@@ -27,8 +32,11 @@ public class main {
             get("/getRoom", roomController::GetRoom);
 
             path("/auth", () -> {
-                post("/register", (req, res) -> Response.OK); // todo
-                post("/login", (req, res) -> Response.OK); // todo
+                post("/register", authController::Register);
+                post("/login", authController::LogIn);
+                post("/logout", authController::LogOut);
+                post("/guest", authController::BecomeGuest);
+                //post("/deguest", authController::RiseFromGuest);
             });
 
 
