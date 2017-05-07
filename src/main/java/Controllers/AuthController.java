@@ -32,7 +32,7 @@ public class AuthController {
         // Get user with these credentials from DB
         User user = userManager.GetUser(userData.get("username"), userData.get("password"));
         if (user == null) {
-            res.status(401);    // If no such user => 401 Unauthorized
+            res.status(400);    // If no such user => 401 Unauthorized
             return NO_USER;
         }
 
@@ -52,11 +52,57 @@ public class AuthController {
         // Get user with these credentials from DB
         User user = userManager.Register(userData.get("username"), userData.get("password"));
         if (user == null) {
-            res.status(401);    // If no such user => 401 Unauthorized
+            res.status(400);    // If no such user => 401 Unauthorized
             return USER_EXISTS;
         }
 
         userManager.LogIn(user);
+
+        return OkPlusUserInfo(user);
+    }
+
+    public String GetUserByID(Request req, Response res) {
+        Integer id = null;
+        try {
+            JSONObject obj = new JSONObject(req.body());
+            id = obj.getInt("id");
+        } catch (JSONException e) {
+            return null;
+        }
+        if (id != null) {
+            res.status(400);    // If something is wrong => 400 Bad Request
+            return BAD_JSON;
+        }
+
+        // Get user with these credentials from DB
+        User user = userManager.GetUser(id);
+        if (user == null) {
+            res.status(400);    // If no such user => 401 Unauthorized
+            return NO_USER;
+        }
+
+        return OkPlusUserInfo(user);
+    }
+
+    public String GetUserByToken(Request req, Response res) {
+        String token = null;
+        try {
+            JSONObject obj = new JSONObject(req.body());
+            token = obj.getString("token");
+        } catch (JSONException e) {
+            return null;
+        }
+        if (token != null) {
+            res.status(400);    // If something is wrong => 400 Bad Request
+            return BAD_JSON;
+        }
+
+        // Get user with these credentials from DB
+        User user = userManager.GetLoggedInUser(token);
+        if (user == null) {
+            res.status(400);    // If no such user => 401 Unauthorized
+            return NO_USER;
+        }
 
         return OkPlusUserInfo(user);
     }
@@ -72,7 +118,7 @@ public class AuthController {
         // Get user with these credentials from DB
         User user = userManager.GetUser(userData.get("username"), userData.get("password"));
         if (user == null) {
-            res.status(401);    // If no such user => 401 Unauthorized
+            res.status(400);    // If no such user => 401 Unauthorized
             return NO_USER;
         }
 
@@ -84,7 +130,7 @@ public class AuthController {
     public String BecomeGuest(Request req, Response res) {
         User user = userManager.NewGuest();
         if (user == null) {
-            res.status(500);    // Very unlikely. `user == null` may happen only if ~10000 users with name "Guest #666" exist.
+            res.status(400);    // Very unlikely. `user == null` may happen only if ~10000 users with name "Guest #666" exist.
             return GUEST_QUOTA_REACHED;
         }
 

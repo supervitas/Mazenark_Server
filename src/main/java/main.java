@@ -39,6 +39,11 @@ public class main {
                 //post("/deguest", authController::RiseFromGuest);
             });
 
+            path("/user", () -> {
+                get("/id", authController::GetUserByID);
+                get("/token", authController::GetUserByToken);
+            });
+
 
             // Unity Server Methods
             path("/room", () -> { // this methods sending from unity instance and accepted only from localhost
