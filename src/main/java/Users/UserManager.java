@@ -89,7 +89,7 @@ public class UserManager {
     }
 
     public boolean IsLoggedIn(User user) {
-        return loggedInUsers.contains(user);
+        return loggedInUsers.containsKey(user.getToken());
     }
 
     private String GenerateSessionTokenForUser(User user) {
