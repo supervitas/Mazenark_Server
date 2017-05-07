@@ -3,12 +3,13 @@ package Users;
 import com.sun.istack.internal.Nullable;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
 public class UserManager {
     private HashSet<User> databaseConnector = new HashSet<>();
-    private HashSet<User> loggedInUsers = new HashSet<>();
+    private HashMap<String, User> loggedInUsers = new HashMap<>();
 
     @Nullable
     public User GetUser(String username, String password) {
@@ -26,6 +27,20 @@ public class UserManager {
                 return user;
         }
         return null;
+    }
+
+    @Nullable
+    public User GetUser(int id) {
+        for (User user : databaseConnector) {
+            if (user.getId() == id)
+                return user;
+        }
+        return null;
+    }
+
+    @Nullable
+    public User GetLoggedInUser(String token) {
+        return loggedInUsers.get(token);
     }
 
     @Nullable
@@ -63,14 +78,14 @@ public class UserManager {
 
     public void LogIn(User user) {
         GenerateSessionTokenForUser(user);
-        loggedInUsers.add(user);
+        loggedInUsers.put(user.getToken(), user);
         user.setLoggedIn(true);
     }
 
     public void LogOut(User user) {
-        user.setToken(null);
         user.setLoggedIn(false);
-        loggedInUsers.remove(user);
+        loggedInUsers.remove(user.getToken());
+        user.setToken(null);
     }
 
     public boolean IsLoggedIn(User user) {
