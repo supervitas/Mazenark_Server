@@ -67,9 +67,6 @@ public class AuthController {
             JSONObject obj = new JSONObject(req.body());
             id = obj.getInt("id");
         } catch (JSONException e) {
-            return null;
-        }
-        if (id != null) {
             res.status(400);    // If something is wrong => 400 Bad Request
             return BAD_JSON;
         }
@@ -90,9 +87,9 @@ public class AuthController {
             JSONObject obj = new JSONObject(req.body());
             token = obj.getString("token");
         } catch (JSONException e) {
-            return null;
+            e.printStackTrace();
         }
-        if (token != null) {
+        if (token == null) {
             res.status(400);    // If something is wrong => 400 Bad Request
             return BAD_JSON;
         }

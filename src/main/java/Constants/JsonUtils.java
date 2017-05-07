@@ -10,7 +10,7 @@ public class JsonUtils {
     public static String ToJson(String key, String value) {
         JSONObject json = new JSONObject();
         try {
-            json.put("port", value);
+            json.put(key, value);
         } catch (JSONException e) {
             e.printStackTrace();
         }
