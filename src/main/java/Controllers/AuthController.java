@@ -17,12 +17,14 @@ public class AuthController {
     private UserManager userManager;
     private final String SECRET_STRING = "secret. :)";  // TODO: Use with md5?
 
+    private String[] loginAndPass = {"username", "password"};
+
     public AuthController(UserManager userManager) {
         this.userManager = userManager;
     }
 
     public String LogIn(Request req, Response res) {
-        HashMap<String, String> userData = ParseUserData(req.body());
+        HashMap<String, String> userData = ParseUserData(req.body(), loginAndPass);
         // Check if all fields in request are present
         if (userData == null || !userData.containsKey("username") || !userData.containsKey("password")) {
             res.status(400);    // If something is wrong => 400 Bad Request
@@ -42,7 +44,7 @@ public class AuthController {
     }
 
     public String Register(Request req, Response res) {
-        HashMap<String, String> userData = ParseUserData(req.body());
+        HashMap<String, String> userData = ParseUserData(req.body(), loginAndPass);
         // Check if all fields in request are present
         if (userData == null || !userData.containsKey("username") || !userData.containsKey("password")) {
             res.status(400);    // If something is wrong => 400 Bad Request
@@ -105,15 +107,14 @@ public class AuthController {
     }
 
     public String LogOut(Request req, Response res) {
-        HashMap<String, String> userData = ParseUserData(req.body());
-        // Check if all fields in request are present
-        if (userData == null || !userData.containsKey("username") || !userData.containsKey("password")) {
+        HashMap<String, String> userData = ParseUserData(req.body(), new String[] {"token"});
+
+        if (userData == null || !userData.containsKey("token")) {
             res.status(400);    // If something is wrong => 400 Bad Request
             return BAD_JSON;
         }
 
-        // Get user with these credentials from DB
-        User user = userManager.GetUser(userData.get("username"), userData.get("password"));
+        User user = userManager.GetLoggedInUser(userData.get("token"));
         if (user == null) {
             res.status(400);    // If no such user => 401 Unauthorized
             return NO_USER;
@@ -136,12 +137,14 @@ public class AuthController {
         return OkPlusUserInfo(user);
     }
 
-    private HashMap<String, String> ParseUserData(String data) {
+    private HashMap<String, String> ParseUserData(String data, String [] fields) {
         HashMap<String, String> userData = new HashMap<>();
         try {
             JSONObject obj = new JSONObject(data);
-            userData.put("username", obj.getString("username"));
-            userData.put("password", obj.getString("password"));
+            for (String field : fields) {
+                userData.put(field, obj.getString(field));
+            }
+
         } catch (JSONException e) {
             return null;
         }
