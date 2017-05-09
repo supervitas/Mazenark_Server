@@ -40,8 +40,8 @@ public class main {
             });
 
             path("/user", () -> {
-                get("/id", authController::GetUserByID);
-                get("/token", authController::GetUserByToken);
+                post("/id", authController::GetUserByID);
+                post("/token", authController::GetUserByToken);
             });
 
 
