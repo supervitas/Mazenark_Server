@@ -1,5 +1,29 @@
 ﻿Имена полей абсолютно случайные и нужны только для понятности. Переименовывай как хочешь. :)
 
+Упрощённая версия:
+
+```json
+{
+	"username": "prambeat",
+	"token": "a1b2c3d4e5f6",
+	"items in storage": [
+			/*items here*/
+		],
+	"items equipped": [
+			/*items here*/
+		],
+	"statistics": [
+			/*scores here*/
+		],
+	"daylies": [
+			/*daylies here*/
+	],
+	"isVIP": true
+}
+```
+
+Как это может выглядеть:
+
 ```json
 {
 	"username": "prambeat",
