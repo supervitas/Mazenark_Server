@@ -12,7 +12,7 @@ import org.json.JSONObject;
 public class main {
     public static void main(String[] args) {
         //Initialisation
-        port(7000);
+        port(6000);
         threadPool(Runtime.getRuntime().availableProcessors());
 
         RoomManager roomManager = new RoomManager(1);

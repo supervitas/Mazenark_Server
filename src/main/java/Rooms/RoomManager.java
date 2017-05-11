@@ -12,7 +12,7 @@ public class RoomManager {
     private int roomsCount = 0;
     private int roomLimit;
 
-    private int roomsStartPort = 8000;
+    private int roomsStartPort = 7000;
 
     public RoomManager(int roomLimit) {
         this.roomLimit = roomLimit;
