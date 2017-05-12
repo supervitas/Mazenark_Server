@@ -1,7 +1,6 @@
 package Constants;
 
 import Users.User;
-import com.sun.istack.internal.Nullable;
 import org.json.JSONObject;
 
 /**

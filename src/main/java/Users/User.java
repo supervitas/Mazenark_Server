@@ -1,7 +1,5 @@
 package Users;
 
-import com.sun.istack.internal.Nullable;
-
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class User {
@@ -12,7 +10,6 @@ public class User {
     private String password;
     private boolean isGuest;
     private boolean isLoggedIn;
-    @Nullable
     private String token = null;
 
     public User(String username, String password, boolean isGuest) {

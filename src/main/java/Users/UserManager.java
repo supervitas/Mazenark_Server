@@ -1,7 +1,5 @@
 package Users;
 
-import com.sun.istack.internal.Nullable;
-
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +9,6 @@ public class UserManager {
     private HashSet<User> databaseConnector = new HashSet<>();
     private HashMap<String, User> loggedInUsers = new HashMap<>();
 
-    @Nullable
     public User GetUser(String username, String password) {
         for (User user : databaseConnector) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password))
@@ -20,7 +17,6 @@ public class UserManager {
         return null;
     }
 
-    @Nullable
     public User GetUser(String username) {
         for (User user : databaseConnector) {
             if (user.getUsername().equals(username))
@@ -29,7 +25,6 @@ public class UserManager {
         return null;
     }
 
-    @Nullable
     public User GetUser(int id) {
         for (User user : databaseConnector) {
             if (user.getId() == id)
@@ -38,12 +33,10 @@ public class UserManager {
         return null;
     }
 
-    @Nullable
     public User GetLoggedInUser(String token) {
         return loggedInUsers.get(token);
     }
 
-    @Nullable
     public User Register(String username, String password) {
         if (GetUser(username) != null)
             return null;
@@ -54,7 +47,6 @@ public class UserManager {
         return user;
     }
 
-    @Nullable
     public User NewGuest() {
         User user = new User("tmp~I hope no one will register this username", "NONE", true);
 
