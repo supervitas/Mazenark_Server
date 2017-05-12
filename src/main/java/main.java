@@ -15,7 +15,7 @@ public class main {
         port(7000);
         threadPool(Runtime.getRuntime().availableProcessors());
 
-        RoomManager roomManager = new RoomManager(1);
+        RoomManager roomManager = new RoomManager(6);
 
         UserManager userManager = new UserManager();
 
