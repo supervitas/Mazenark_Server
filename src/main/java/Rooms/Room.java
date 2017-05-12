@@ -15,7 +15,7 @@ public class Room {
     Room(int port, int roomId) {
         this.port = port;
         this.roomID = roomId;
-//        new Thread(this::CreateUnityInstance).run();
+        new Thread(this::CreateUnityInstance).run();
     }
 
     public void SetInGame(boolean inGame){
