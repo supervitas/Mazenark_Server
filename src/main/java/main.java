@@ -28,7 +28,7 @@ public class main {
                 res.type("application/json");
             });
 
-            //Public Methods
+            // Public Methods
             get("/getRoom", roomController::GetRoom);
 
             path("/auth", () -> {
