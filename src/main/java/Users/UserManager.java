@@ -12,7 +12,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class UserManager {
     private int guestCounter = 0;
-    private HashSet<User> guestDb = new HashSet<>();
     private HashMap<String, User> loggedInUsers = new HashMap<>();
     private MongoDriver mongoDriver;
 
@@ -46,25 +45,23 @@ public class UserManager {
         user.setUsername("Guest #" + ++guestCounter);
 
         user.setToken(GenerateSessionTokenForUser());
-        guestDb.add(user);
-
+        mongoDriver.RegisterUser(user);
         return user;
     }
 
     public void LogIn(User user) {
         user.setToken(GenerateSessionTokenForUser());
         loggedInUsers.put(user.getToken(), user);
-        user.setLoggedIn(true);
     }
 
     public void LogOut(User user) {
-        user.setLoggedIn(false);
         loggedInUsers.remove(user.getToken());
         user.setToken(null);
     }
 
-    public boolean IsLoggedIn(User user) {
-        return loggedInUsers.containsKey(user.getToken());
+    public void ClearGuests() {
+        guestCounter = 0;
+        mongoDriver.ClearGuests();
     }
 
     private String GenerateSessionTokenForUser() {

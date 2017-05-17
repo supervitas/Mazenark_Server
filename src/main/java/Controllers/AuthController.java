@@ -91,7 +91,6 @@ public class AuthController {
             return BAD_JSON;
         }
 
-        // Get user with these credentials from DB
         User user = userManager.GetLoggedInUser(token);
         if (user == null) {
             res.status(400);    // If no such user => 401 Unauthorized

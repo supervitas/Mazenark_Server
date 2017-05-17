@@ -22,8 +22,10 @@ public class main {
         UserManager userManager = new UserManager(mongoDriver);
 
         RoomController roomController = new RoomController(roomManager);
-
         AuthController authController = new AuthController(userManager);
+
+        userManager.ClearGuests();
+
 
         path("/api", () -> {
             before("/*", (req, res) -> {

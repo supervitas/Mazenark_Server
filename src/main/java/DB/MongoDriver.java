@@ -11,6 +11,8 @@ import com.mongodb.connection.ClusterSettings;
 import com.mongodb.ConnectionString;
 import org.bson.Document;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 import static com.mongodb.client.model.Filters.*;
 
 /**
@@ -28,6 +30,16 @@ public class MongoDriver {
         users = db.getCollection("users"); // collection name
     }
 
+    public boolean ClearGuests() {
+        CompletableFuture<Boolean> result = new CompletableFuture<>();
+        users.deleteMany(eq("isGuest", true), (done, t) -> result.complete(true));
+        try {
+            return result.get();
+        } catch (InterruptedException | ExecutionException e) {
+            return false;
+        }
+    }
+
     public void RegisterUser(User user) {
         Document doc = new Document();
 
@@ -35,7 +47,6 @@ public class MongoDriver {
         doc.append("score", user.getScore());
         doc.append("password", user.getPassword());
         doc.append("isGuest", user.isGuest());
-        doc.append("token", user.getToken());
 
         users.insertOne(doc, (result, t) -> {});
     }
@@ -47,7 +58,6 @@ public class MongoDriver {
             if (document != null) {
                 User user = new User();
                 user.setUsername(document.getString("username"));
-                user.setToken(document.getString("token"));
                 user.setScore(document.getInteger("score"));
                 result.complete(user);
             } else {
