@@ -58,8 +58,6 @@ public class AuthController {
             return USER_EXISTS;
         }
 
-        userManager.LogIn(user);
-
         return OkPlusUserInfo(user);
     }
 

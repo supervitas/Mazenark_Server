@@ -1,5 +1,6 @@
 package DB;
 
+import Users.User;
 import com.mongodb.Block;
 import com.mongodb.ServerAddress;
 import com.mongodb.async.SingleResultCallback;
@@ -13,6 +14,8 @@ import org.bson.Document;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.inc;
@@ -22,11 +25,18 @@ import static java.util.Arrays.asList;
 /**
  * Created by nikolaev on 16.05.17.
  */
+
+//http://mongodb.github.io/mongo-java-driver/3.4/driver-async/getting-started/quick-start/
 public class MongoDriver {
+    private MongoDatabase db;
+    MongoCollection<Document> users;
+
     SingleResultCallback<Document> callbackPrintDocuments = new SingleResultCallback<Document>() {
         @Override
         public void onResult(final Document document, final Throwable t) {
-            System.out.println(document.toJson());
+            if(document != null) {
+                System.out.println(document.toJson());
+            }
         }
     };
 
@@ -43,12 +53,39 @@ public class MongoDriver {
             System.out.println(document.toJson());
         }
     };
-    public MongoDriver(){
+
+    public MongoDriver() {
         MongoClient mongoClient = MongoClients.create(new ConnectionString("mongodb://localhost"));
-        MongoDatabase database = mongoClient.getDatabase("mazenark");
-        MongoCollection<Document> collection = database.getCollection("user");
-        //http://mongodb.github.io/mongo-java-driver/3.4/driver-async/getting-started/quick-start/
+        db = mongoClient.getDatabase("mazenark");
+        users = db.getCollection("users");
     }
 
+    public void RegisterUser(User user) {
+        Document doc = new Document();
+        doc.append("username", user.getUsername());
+        doc.append("password", user.getPassword());
+        doc.append("isGuest", user.isGuest());
+        doc.append("token", user.getToken());
+        users.insertOne(doc, (result, t) -> {});
+    }
 
+    public String FindUser(String user) {
+        CompletableFuture<String> result = new CompletableFuture<>();
+
+        SingleResultCallback<Document> callback = (document, t) -> {
+            if(document != null) {
+                result.complete(document.toJson());
+            } else {
+                result.complete(null);
+            }
+        };
+
+        users.find(eq("username", user)).first(callback);
+
+        try {
+            return result.get();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

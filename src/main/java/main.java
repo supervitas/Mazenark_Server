@@ -1,23 +1,25 @@
 import static spark.Spark.*;
 
+import DB.MongoDriver;
 
 import Constants.Response;
 import Controllers.AuthController;
 import Controllers.RoomController;
-import Rooms.Room;
 import Rooms.RoomManager;
 import Users.UserManager;
-import org.json.JSONObject;
+
 
 public class main {
     public static void main(String[] args) {
         //Initialisation
+
         port(7000);
         threadPool(Runtime.getRuntime().availableProcessors());
 
-        RoomManager roomManager = new RoomManager(6);
+        MongoDriver mongoDriver = new MongoDriver();
 
-        UserManager userManager = new UserManager();
+        RoomManager roomManager = new RoomManager(1);
+        UserManager userManager = new UserManager(mongoDriver);
 
         RoomController roomController = new RoomController(roomManager);
 
@@ -27,7 +29,6 @@ public class main {
             before("/*", (req, res) -> {
                 res.type("application/json");
             });
-
             // Public Methods
             get("/getRoom", roomController::GetRoom);
 

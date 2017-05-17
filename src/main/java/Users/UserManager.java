@@ -1,13 +1,23 @@
 package Users;
 
+import DB.MongoDriver;
+import com.mongodb.async.SingleResultCallback;
+import org.bson.Document;
+
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 public class UserManager {
     private HashSet<User> databaseConnector = new HashSet<>();
     private HashMap<String, User> loggedInUsers = new HashMap<>();
+    private MongoDriver mongoDriver;
+
+    public UserManager(MongoDriver mongoDriver){
+        this.mongoDriver = mongoDriver;
+    }
 
     public User GetUser(String username, String password) {
         for (User user : databaseConnector) {
@@ -18,10 +28,8 @@ public class UserManager {
     }
 
     public User GetUser(String username) {
-        for (User user : databaseConnector) {
-            if (user.getUsername().equals(username))
-                return user;
-        }
+        String user = mongoDriver.FindUser(username);
+
         return null;
     }
 
@@ -42,7 +50,8 @@ public class UserManager {
             return null;
 
         User user = new User(username, password, false);
-        databaseConnector.add(user);
+        user.setToken(GenerateSessionTokenForUser());
+        mongoDriver.RegisterUser(user);
 
         return user;
     }
@@ -63,13 +72,14 @@ public class UserManager {
         if (existingUser != null)
             return null;
 
-        databaseConnector.add(user);
+        mongoDriver.RegisterUser(user);
+//        databaseConnector.add(user);
 
         return user;
     }
 
     public void LogIn(User user) {
-        GenerateSessionTokenForUser(user);
+        user.setToken(GenerateSessionTokenForUser());
         loggedInUsers.put(user.getToken(), user);
         user.setLoggedIn(true);
     }
@@ -84,9 +94,8 @@ public class UserManager {
         return loggedInUsers.containsKey(user.getToken());
     }
 
-    private String GenerateSessionTokenForUser(User user) {
+    private String GenerateSessionTokenForUser() {
         String token = new BigInteger(128, new Random()).toString(32);
-        user.setToken(token);
         return token;
     }
 }
