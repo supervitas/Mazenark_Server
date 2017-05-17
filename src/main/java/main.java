@@ -41,7 +41,7 @@ public class main {
             });
 
             path("/user", () -> {
-                post("/id", authController::GetUserByID);
+                post("/name", authController::GetUserByName);
                 post("/token", authController::GetUserByToken);
             });
 

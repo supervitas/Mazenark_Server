@@ -6,16 +6,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
-
-import java.math.BigInteger;
 import java.util.HashMap;
-import java.util.Random;
 
 import static Constants.Response.*;
 
 public class AuthController {
     private UserManager userManager;
-    private final String SECRET_STRING = "secret. :)";  // TODO: Use with md5?
 
     private String[] loginAndPass = {"username", "password"};
 
@@ -61,22 +57,23 @@ public class AuthController {
         return OkPlusUserInfo(user);
     }
 
-    public String GetUserByID(Request req, Response res) {
-        Integer id = null;
+    public String GetUserByName(Request req, Response res) {
+        String name;
         try {
             JSONObject obj = new JSONObject(req.body());
-            id = obj.getInt("id");
+            name = obj.getString("username");
         } catch (JSONException e) {
             res.status(400);    // If something is wrong => 400 Bad Request
             return BAD_JSON;
         }
 
         // Get user with these credentials from DB
-        User user = userManager.GetUser(id);
+        User user = userManager.GetUser(name, null);
         if (user == null) {
             res.status(400);    // If no such user => 401 Unauthorized
             return NO_USER;
         }
+        user.setToken(null); // dont provide credentials
 
         return OkPlusUserInfo(user);
     }
@@ -129,8 +126,6 @@ public class AuthController {
             res.status(400);    // Very unlikely. `user == null` may happen only if ~10000 users with name "Guest #666" exist.
             return GUEST_QUOTA_REACHED;
         }
-
-        userManager.LogIn(user);
 
         return OkPlusUserInfo(user);
     }

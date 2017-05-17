@@ -11,7 +11,8 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 public class UserManager {
-    private HashSet<User> databaseConnector = new HashSet<>();
+    private int guestCounter = 0;
+    private HashSet<User> guestDb = new HashSet<>();
     private HashMap<String, User> loggedInUsers = new HashMap<>();
     private MongoDriver mongoDriver;
 
@@ -20,25 +21,7 @@ public class UserManager {
     }
 
     public User GetUser(String username, String password) {
-        for (User user : databaseConnector) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password))
-                return user;
-        }
-        return null;
-    }
-
-    public User GetUser(String username) {
-        String user = mongoDriver.FindUser(username);
-
-        return null;
-    }
-
-    public User GetUser(int id) {
-        for (User user : databaseConnector) {
-            if (user.getId() == id)
-                return user;
-        }
-        return null;
+        return mongoDriver.FindUser(username, password);
     }
 
     public User GetLoggedInUser(String token) {
@@ -46,10 +29,11 @@ public class UserManager {
     }
 
     public User Register(String username, String password) {
-        if (GetUser(username) != null)
+        if (GetUser(username, null) != null)
             return null;
 
-        User user = new User(username, password, false);
+        User user = new User(username, password);
+        user.setScore(0);
         user.setToken(GenerateSessionTokenForUser());
         mongoDriver.RegisterUser(user);
 
@@ -57,23 +41,12 @@ public class UserManager {
     }
 
     public User NewGuest() {
-        User user = new User("tmp~I hope no one will register this username", "NONE", true);
+        User user = new User();
+        user.setGuest(true);
+        user.setUsername("Guest #" + ++guestCounter);
 
-        // Just in case someone registers with "Guest #999" username.
-        for (int i = user.getId(); i < user.getId() + 10e+3; i++) {
-            User existingUser = GetUser("Guest #" + i);
-            if (existingUser == null) {
-                user.setUsername("Guest #" + i);
-                break;
-            }
-        }
-
-        User existingUser = GetUser(user.getUsername());
-        if (existingUser != null)
-            return null;
-
-        mongoDriver.RegisterUser(user);
-//        databaseConnector.add(user);
+        user.setToken(GenerateSessionTokenForUser());
+        guestDb.add(user);
 
         return user;
     }
@@ -95,7 +68,6 @@ public class UserManager {
     }
 
     private String GenerateSessionTokenForUser() {
-        String token = new BigInteger(128, new Random()).toString(32);
-        return token;
+        return new BigInteger(128, new Random()).toString(32);
     }
 }

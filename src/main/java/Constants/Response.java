@@ -18,7 +18,6 @@ public class Response {
         try {
             JSONObject jsonObject = new JSONObject(OK);
             jsonObject.put("username", user.getUsername());
-            jsonObject.put("id", user.getId());
             jsonObject.put("isGuest", user.isGuest());
             if (user.getToken() != null)
                 jsonObject.put("token", user.getToken());
