@@ -13,6 +13,8 @@ public class User implements UnityMongoSerializable {
     private boolean isGuest;
     private String token = null;
     private ArrayList<StatisticsRecord> statistics = new ArrayList<>();
+    private ArrayList<Item> itemsInInventory = new ArrayList<>();
+    private ArrayList<Item> itemsInStorage = new ArrayList<>();
 
     User(String username, String password) {
         this.username = username;
@@ -85,6 +87,20 @@ public class User implements UnityMongoSerializable {
             statistics.add(record);
         }
 
+        List<Document> documentedItemsInInventory = (List<Document>) data.get("itemsInInventory", ArrayList.class);
+        for (Document rawRecord : documentedItemsInInventory) {
+            Item item = new Item();
+            item.UpdateFromDocument(rawRecord);
+            itemsInInventory.add(item);
+        }
+
+        List<Document> documentedItemsInStorage = (List<Document>) data.get("itemsInStorage", ArrayList.class);
+        for (Document rawRecord : documentedItemsInStorage) {
+            Item item = new Item();
+            item.UpdateFromDocument(rawRecord);
+            itemsInStorage.add(item);
+        }
+
         return this;
     }
 
@@ -106,6 +122,18 @@ public class User implements UnityMongoSerializable {
             documentedStatistics.add(record.ToDocument());
         }
         result.append("statistics", documentedStatistics);
+
+        List<Document> documentedItemsInInventory = new ArrayList<>();
+        for (Item item : itemsInInventory) {
+            documentedItemsInInventory.add(item.ToDocument());
+        }
+        result.append("itemsInInventory", documentedItemsInInventory);
+
+        List<Document> documentedItemsInStorage = new ArrayList<>();
+        for (Item item : itemsInStorage) {
+            documentedItemsInStorage.add(item.ToDocument());
+        }
+        result.append("itemsInStorage", documentedItemsInStorage);
 
         return result;
     }
