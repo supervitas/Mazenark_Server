@@ -10,7 +10,6 @@ import java.util.List;
 public class User implements UnityMongoSerializable {
     private String username;
     private String password;
-    private int score;
     private boolean isGuest;
     private String token = null;
     private ArrayList<StatisticsRecord> statistics = new ArrayList<>();
@@ -25,8 +24,26 @@ public class User implements UnityMongoSerializable {
         // statistics.add(new StatisticsRecord("score", 0));
     }
 
-    public int getScore() { return this.score;}
-    public void setScore(int score) { this.score = score;}
+    public int getStatisticsRecord(String name) {
+        for (StatisticsRecord record : statistics) {
+            if (record.name.equals(name)) {
+                return record.value;
+            }
+        }
+
+        return 0; // Or shall there be created new record and then added to ArrayList?
+    }
+    public void setStatisticsRecord(String name, int value) {
+        for (StatisticsRecord record : statistics) {
+            if (record.name.equals(name)) {
+                record.value = value;
+                return;
+            }
+        }
+
+        StatisticsRecord record = new StatisticsRecord(name, value);
+        statistics.add(record);
+    }
 
     public String getUsername() {
         return username;
@@ -59,7 +76,6 @@ public class User implements UnityMongoSerializable {
     public UnityMongoSerializable UpdateFromDocument(Document data) {
         username = data.getString("username");
         password = data.getString("password");
-        score = data.getInteger("score");
         isGuest = data.getBoolean("isGuest");
 
         List<Document> documentedStatistics = (List<Document>) data.get("statistics", ArrayList.class);
@@ -83,7 +99,6 @@ public class User implements UnityMongoSerializable {
 
         result.append("username", username);
         result.append("password", password);
-        result.append("score", score);
         result.append("isGuest", isGuest);
 
         List<Document> documentedStatistics = new ArrayList<>();
