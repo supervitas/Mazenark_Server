@@ -32,7 +32,6 @@ public class UserManager {
             return null;
 
         User user = new User(username, password);
-        user.setScore(0);
         user.setToken(GenerateSessionTokenForUser());
         mongoDriver.RegisterUser(user);
 
