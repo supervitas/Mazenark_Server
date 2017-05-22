@@ -43,6 +43,7 @@ public class UserManager {
         User user = new User();
         user.setGuest(true);
         user.setUsername("Guest #" + ++guestCounter);
+        user.setPassword("Guests have no passwords.");
 
         user.setToken(GenerateSessionTokenForUser());
         mongoDriver.RegisterUser(user);

@@ -41,12 +41,7 @@ public class MongoDriver {
     }
 
     public void RegisterUser(User user) {
-        Document doc = new Document();
-
-        doc.append("username", user.getUsername());
-        doc.append("score", user.getScore());
-        doc.append("password", user.getPassword());
-        doc.append("isGuest", user.isGuest());
+        Document doc = user.ToDocument();
 
         users.insertOne(doc, (result, t) -> {});
     }
@@ -54,24 +49,27 @@ public class MongoDriver {
     public User FindUser(String userName, String password) {
         CompletableFuture<User> result = new CompletableFuture<>();
 
+        // Here goes some function
         SingleResultCallback<Document> callback = (document, t) -> {
             if (document != null) {
                 User user = new User();
-                user.setUsername(document.getString("username"));
-                user.setScore(document.getInteger("score"));
-                result.complete(user);
+                user.UpdateFromDocument(document);
+                result.complete(user);  // sets value returned by "get()"
             } else {
                 result.complete(null);
             }
         };
+        // Here some function ends
+
         if (password != null) {
+            //                                                                       ↓ Here some function executes
             users.find(and(eq("username", userName),eq("password", password))).first(callback);
         } else {
             users.find(eq("username", userName)).first(callback);
         }
 
         try {
-            return result.get();
+            return result.get();    // Returns value from "complete(T value)"
         } catch (Exception e) {
             return null;
         }
