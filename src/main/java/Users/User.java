@@ -3,18 +3,27 @@ package Users;
 import org.bson.Document;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class User implements UnityMongoSerializable {
     private String username;
     private String password;
     private int score;
     private boolean isGuest;
     private String token = null;
+    private ArrayList<StatisticsRecord> statistics = new ArrayList<>();
 
     User(String username, String password) {
         this.username = username;
         this.password = password;
+        // Attention! Do not initialize statistics array with elements! Otherwise there bound to be duplicates when deserializing using UpdateFromDocument or UpdateFromJSON methods. It is better to let Unity create and update those.
+        // statistics.add(new StatisticsRecord("score", 0));
     }
-    public User() {}
+    public User() {
+        // statistics.add(new StatisticsRecord("score", 0));
+    }
 
     public int getScore() { return this.score;}
     public void setScore(int score) { this.score = score;}
@@ -53,6 +62,13 @@ public class User implements UnityMongoSerializable {
         score = data.getInteger("score");
         isGuest = data.getBoolean("isGuest");
 
+        List<Document> documentedStatistics = (List<Document>) data.get("statistics", ArrayList.class);
+        for (Document rawRecord : documentedStatistics) {
+            StatisticsRecord record = new StatisticsRecord();
+            record.UpdateFromDocument(rawRecord);
+            statistics.add(record);
+        }
+
         return this;
     }
 
@@ -69,6 +85,12 @@ public class User implements UnityMongoSerializable {
         result.append("password", password);
         result.append("score", score);
         result.append("isGuest", isGuest);
+
+        List<Document> documentedStatistics = new ArrayList<>();
+        for (StatisticsRecord record : statistics) {
+            documentedStatistics.add(record.ToDocument());
+        }
+        result.append("statistics", documentedStatistics);
 
         return result;
     }

@@ -44,6 +44,8 @@ public class MongoDriver {
         Document doc = user.ToDocument();
 
         users.insertOne(doc, (result, t) -> {});
+
+        FindUser(user.getUsername(), user.getPassword());
     }
 
     public User FindUser(String userName, String password) {
