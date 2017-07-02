@@ -79,7 +79,7 @@ public class AuthController {
     }
 
     public String GetUserByToken(Request req, Response res) {
-        String token = null;
+            String token = null;
         try {
             JSONObject obj = new JSONObject(req.body());
             token = obj.getString("token");
@@ -127,6 +127,55 @@ public class AuthController {
         }
 
         return OkPlusUserInfo(user);
+    }
+
+    public String GetUserData(Request req, Response res) {
+        String name;
+        try {
+            JSONObject obj = new JSONObject(req.body());
+            name = obj.getString("username");
+        } catch (JSONException e) {
+            res.status(400);    // If something is wrong => 400 Bad Request
+            return BAD_JSON;
+        }
+
+        // Get user with these credentials from DB
+        User user = userManager.GetUser(name, null);
+        if (user == null) {
+            res.status(400);    // If no such user => 401 Unauthorized
+            return NO_USER;
+        }
+
+        return user.ToJSON().toString();
+    }
+
+    public String UpdateUserData(Request req, Response res) {
+        String name;
+        try {
+            JSONObject obj = new JSONObject(req.body());
+            name = obj.getString("username");
+        } catch (JSONException e) {
+            res.status(400);    // If something is wrong => 400 Bad Request
+            return BAD_JSON;
+        }
+
+        // Get user with these credentials from DB
+        User user = userManager.GetUser(name, null);
+        if (user == null) {
+            res.status(400);    // If no such user => 401 Unauthorized
+            return NO_USER;
+        }
+
+        try {
+            JSONObject obj = new JSONObject(req.body());
+            user.UpdateFromJSON(obj);
+            // TODO: update user in mongodb!
+        } catch (JSONException e) {
+            res.status(400);    // If something is wrong => 400 Bad Request
+            return BAD_JSON;
+        }
+
+        return OK;
     }
 
     private HashMap<String, String> ParseUserData(String data, String [] fields) {

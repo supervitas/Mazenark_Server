@@ -45,6 +45,8 @@ public class main {
             path("/user", () -> {
                 post("/name", authController::GetUserByName);
                 post("/token", authController::GetUserByToken);
+                post("/get_data", authController::GetUserData);
+                post("/update_data", authController::UpdateUserData);
             });
 
 
