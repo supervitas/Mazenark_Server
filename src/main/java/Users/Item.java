@@ -45,7 +45,7 @@ public class Item implements UnityMongoSerializable {
 
         } catch (JSONException e) {
             thereWereNoErrors = false;
-            System.out.println("An error has occurred when updating statistics record " + id + " from JSON when reading " + currentFieldBeingRead + " field.");
+            System.out.println("An error has occurred when updating item \"" + id + "\" from JSON when reading \"" + currentFieldBeingRead + "\" field.");
             System.out.println(data.toString());
             e.printStackTrace();
         }
@@ -79,7 +79,7 @@ public class Item implements UnityMongoSerializable {
             result.put("chargesTotal", chargesTotal);
 
         } catch (JSONException e) {
-            System.out.println("An error has occurred when converting statistics record " + id + " to JSON! O_o");
+            System.out.println("An error has occurred when converting item \"" + id + "\" to JSON! O_o");
             e.printStackTrace();
         }
 
