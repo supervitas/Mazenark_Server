@@ -159,8 +159,12 @@ public class User implements UnityMongoSerializable {
         }
 
         if (thereWereNoErrors) {
-            username = tmpUsername;
-            password = tmpPassword;
+            // Apply credentials changes only if they are not null.
+            if (!tmpUsername.equals(""))
+                username = tmpUsername;
+            if (!tmpPassword.equals(""))
+                password = tmpPassword;
+
             isGuest = tmpIsGuest;
             statistics = tmpStatistics;
             itemsInInventory = tmpItemsInInventory;
@@ -204,7 +208,7 @@ public class User implements UnityMongoSerializable {
         JSONObject result = new JSONObject();
         try {
             result.put("username", username);
-            result.put("password", password);
+            //result.put("password", password); // better not to send this field to everyone. :)
             result.put("isGuest", isGuest);
 
             JSONArray jsonedStatistics = new JSONArray();
