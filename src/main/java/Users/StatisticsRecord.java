@@ -1,7 +1,11 @@
 package Users;
 
 import org.bson.Document;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class StatisticsRecord implements UnityMongoSerializable {
     public String name = "REPORT AS A BUG";
@@ -27,7 +31,31 @@ public class StatisticsRecord implements UnityMongoSerializable {
 
     @Override
     public UnityMongoSerializable UpdateFromJSON(JSONObject data) {
-        return null;
+        String currentFieldBeingRead = "";
+        String tmpName = "";
+        Integer tmpValue = 0;
+
+        boolean thereWereNoErrors = true;
+        try {
+            currentFieldBeingRead = "name";
+            tmpName = data.getString(currentFieldBeingRead);
+
+            currentFieldBeingRead = "value";
+            tmpValue = data.getInt(currentFieldBeingRead);
+
+        } catch (JSONException e) {
+            thereWereNoErrors = false;
+            System.out.println("An error has occurred when updating item " + name + " from JSON when reading " + currentFieldBeingRead + " field.");
+            System.out.println(data.toString());
+            e.printStackTrace();
+        }
+
+        if (thereWereNoErrors) {
+            name = tmpName;
+            value = tmpValue;
+        }
+
+        return this;
     }
 
     @Override
@@ -42,6 +70,16 @@ public class StatisticsRecord implements UnityMongoSerializable {
 
     @Override
     public JSONObject ToJSON() {
-        return null;
+        JSONObject result = new JSONObject();
+        try {
+            result.put("name", name);
+            result.put("value", value);
+
+        } catch (JSONException e) {
+            System.out.println("An error has occurred when converting item " + name + " to JSON! O_o");
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }
