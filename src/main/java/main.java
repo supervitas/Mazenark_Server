@@ -18,7 +18,7 @@ public class main {
 
         MongoDriver mongoDriver = new MongoDriver();
 
-        RoomManager roomManager = new RoomManager(1);
+        RoomManager roomManager = new RoomManager(3);
         UserManager userManager = new UserManager(mongoDriver);
 
         RoomController roomController = new RoomController(roomManager);
