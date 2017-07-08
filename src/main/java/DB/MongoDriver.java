@@ -48,6 +48,17 @@ public class MongoDriver {
         FindUser(user.getUsername(), user.getPassword());
     }
 
+    public void UpdateUser(User user) {
+        CompletableFuture<Boolean> result = new CompletableFuture<>();
+        users.updateOne(eq("username", user.getUsername()), user.ToDocument() ,(done, t) -> result.complete(true));
+        try {
+            result.get();
+        } catch (InterruptedException | ExecutionException e) {
+
+        }
+
+    }
+
     public User FindUser(String userName, String password) {
         CompletableFuture<User> result = new CompletableFuture<>();
 

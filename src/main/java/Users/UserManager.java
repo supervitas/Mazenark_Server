@@ -64,6 +64,10 @@ public class UserManager {
         mongoDriver.ClearGuests();
     }
 
+    public void UpdateUser(User user) {
+        mongoDriver.UpdateUser(user);
+    }
+
     private String GenerateSessionTokenForUser() {
         return new BigInteger(128, new Random()).toString(32);
     }

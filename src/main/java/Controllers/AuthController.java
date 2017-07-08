@@ -169,7 +169,7 @@ public class AuthController {
         try {
             JSONObject obj = new JSONObject(req.body());
             user.UpdateFromJSON(obj);
-            // TODO: update user in mongodb!
+            userManager.UpdateUser(user);
         } catch (JSONException e) {
             res.status(400);    // If something is wrong => 400 Bad Request
             return BAD_JSON;
