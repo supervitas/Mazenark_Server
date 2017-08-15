@@ -105,6 +105,8 @@ public class User implements UnityMongoSerializable {
             itemsInStorage.add(item);
         }
 
+        UpdateDailies();
+
         List<Document> documentedDailies = (List<Document>) data.get("dailies", ArrayList.class);
         for (Document rawRecord : documentedDailies) {
             Daily daily = new Daily();
@@ -164,6 +166,8 @@ public class User implements UnityMongoSerializable {
                 item.UpdateFromJSON(jsonedItemsInStorage.getJSONObject(i));
                 tmpItemsInStorage.add(item);
             }
+
+            UpdateDailies();
 
             currentFieldBeingRead = "dailies";
             JSONArray jsonedDailies = data.getJSONArray(currentFieldBeingRead);
@@ -292,6 +296,12 @@ public class User implements UnityMongoSerializable {
         if (now > timeWhenDailiesGenerated + eighteenHours) {
             timeWhenDailiesGenerated = now;
             // TODO: DailyManager.GetRandomDailies
+        }
+    }
+
+    public void UpdateDailies() {
+        for (Daily daily : dailies) {
+            daily.TryAccompishDaily(this);
         }
     }
 }
