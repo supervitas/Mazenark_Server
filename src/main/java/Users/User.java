@@ -17,7 +17,7 @@ public class User implements UnityMongoSerializable {
     private ArrayList<Item> itemsInInventory = new ArrayList<>();
     private ArrayList<Item> itemsInStorage = new ArrayList<>();
     private long timeWhenDailiesGenerated = 0;
-    // TODO: private ArrayList<Daily>
+    private ArrayList<Daily> dailies = new ArrayList<>();
 
     User(String username, String password) {
         this.username = username;
@@ -105,6 +105,13 @@ public class User implements UnityMongoSerializable {
             itemsInStorage.add(item);
         }
 
+        List<Document> documentedDailies = (List<Document>) data.get("dailies", ArrayList.class);
+        for (Document rawRecord : documentedDailies) {
+            Daily daily = new Daily();
+            daily.UpdateFromDocument(rawRecord);
+            dailies.add(daily);
+        }
+
         return this;
     }
 
@@ -118,6 +125,7 @@ public class User implements UnityMongoSerializable {
         ArrayList<StatisticsRecord> tmpStatistics = new ArrayList<>();
         ArrayList<Item> tmpItemsInInventory = new ArrayList<>();
         ArrayList<Item> tmpItemsInStorage = new ArrayList<>();
+        ArrayList<Daily> tmpDailies = new ArrayList<>();
 
         boolean thereWereNoErrors = true;
         try {
@@ -157,6 +165,14 @@ public class User implements UnityMongoSerializable {
                 tmpItemsInStorage.add(item);
             }
 
+            currentFieldBeingRead = "dailies";
+            JSONArray jsonedDailies = data.getJSONArray(currentFieldBeingRead);
+            for (int i = 0; i < jsonedItemsInStorage.length(); i++) {
+                Daily daily = new Daily();
+                daily.UpdateFromJSON(jsonedDailies.getJSONObject(i));
+                tmpDailies.add(daily);
+            }
+
         } catch (JSONException e) {
             thereWereNoErrors = false;
             System.out.println("An error has occurred when updating user " + username + " from JSON when reading " + currentFieldBeingRead + " field.");
@@ -176,6 +192,7 @@ public class User implements UnityMongoSerializable {
             statistics = tmpStatistics;
             itemsInInventory = tmpItemsInInventory;
             itemsInStorage = tmpItemsInStorage;
+            dailies = tmpDailies;
         }
 
         return this;
@@ -208,6 +225,12 @@ public class User implements UnityMongoSerializable {
         }
         result.append("itemsInStorage", documentedItemsInStorage);
 
+        List<Document> documentedDailies = new ArrayList<>();
+        for (Daily daily : dailies) {
+            documentedDailies.add(daily.ToDocument());
+        }
+        result.append("dailies", documentedDailies);
+
         return result;
     }
 
@@ -237,6 +260,12 @@ public class User implements UnityMongoSerializable {
                 jsonedItemsInStorage.put(item.ToJSON());
             }
             result.put("itemsInStorage", jsonedItemsInStorage);
+
+            JSONArray jsonedDailies = new JSONArray();
+            for (Daily daily : dailies) {
+                jsonedDailies.put(daily.ToJSON());
+            }
+            result.put("dailies", jsonedDailies);
         } catch (JSONException e) {
             System.out.println("An error has occurred when converting user " + username + " to JSON! O_o");
             e.printStackTrace();
