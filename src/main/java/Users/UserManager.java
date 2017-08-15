@@ -51,6 +51,7 @@ public class UserManager {
 
     public void LogIn(User user) {
         user.setToken(GenerateSessionTokenForUser());
+        user.GenerateDailiesIfNeeded();
         loggedInUsers.put(user.getToken(), user);
     }
 

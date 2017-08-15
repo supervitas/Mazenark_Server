@@ -6,7 +6,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class User implements UnityMongoSerializable {
@@ -17,6 +16,8 @@ public class User implements UnityMongoSerializable {
     private ArrayList<StatisticsRecord> statistics = new ArrayList<>();
     private ArrayList<Item> itemsInInventory = new ArrayList<>();
     private ArrayList<Item> itemsInStorage = new ArrayList<>();
+    private long timeWhenDailiesGenerated = 0;
+    // TODO: private ArrayList<Daily>
 
     User(String username, String password) {
         this.username = username;
@@ -81,6 +82,7 @@ public class User implements UnityMongoSerializable {
         username = data.getString("username");
         password = data.getString("password");
         isGuest = data.getBoolean("isGuest");
+        timeWhenDailiesGenerated = data.getInteger("timeWhenDailiesGenerated");
 
         List<Document> documentedStatistics = (List<Document>) data.get("statistics", ArrayList.class);
         for (Document rawRecord : documentedStatistics) {
@@ -112,6 +114,7 @@ public class User implements UnityMongoSerializable {
         String tmpUsername = "";
         String tmpPassword = "";
         boolean tmpIsGuest = false;
+        int tmpLastTimeLoggedIn = 0;
         ArrayList<StatisticsRecord> tmpStatistics = new ArrayList<>();
         ArrayList<Item> tmpItemsInInventory = new ArrayList<>();
         ArrayList<Item> tmpItemsInStorage = new ArrayList<>();
@@ -126,6 +129,9 @@ public class User implements UnityMongoSerializable {
 
             currentFieldBeingRead = "isGuest";
             tmpIsGuest = data.getBoolean(currentFieldBeingRead);
+
+            currentFieldBeingRead = "timeWhenDailiesGenerated";
+            tmpLastTimeLoggedIn = data.optInt(currentFieldBeingRead, 0);
 
             currentFieldBeingRead = "statistics";
             JSONArray jsonedStatistics = data.getJSONArray(currentFieldBeingRead);
@@ -166,6 +172,7 @@ public class User implements UnityMongoSerializable {
                 password = tmpPassword;
 
             isGuest = tmpIsGuest;
+            timeWhenDailiesGenerated = tmpLastTimeLoggedIn;
             statistics = tmpStatistics;
             itemsInInventory = tmpItemsInInventory;
             itemsInStorage = tmpItemsInStorage;
@@ -181,6 +188,7 @@ public class User implements UnityMongoSerializable {
         result.append("username", username);
         result.append("password", password);
         result.append("isGuest", isGuest);
+        result.append("timeWhenDailiesGenerated", timeWhenDailiesGenerated);
 
         List<Document> documentedStatistics = new ArrayList<>();
         for (StatisticsRecord record : statistics) {
@@ -210,6 +218,7 @@ public class User implements UnityMongoSerializable {
             result.put("username", username);
             //result.put("password", password); // better not to send this field to everyone. :)
             result.put("isGuest", isGuest);
+            result.put("timeWhenDailiesGenerated", timeWhenDailiesGenerated);
 
             JSONArray jsonedStatistics = new JSONArray();
             for (StatisticsRecord record : statistics) {
@@ -246,5 +255,14 @@ public class User implements UnityMongoSerializable {
 
         return isGuest == user.isGuest && username.equals(user.username) && password.equals(user.password);
 
+    }
+
+    public void GenerateDailiesIfNeeded() {
+        long eighteenHours = 18 * 1000 * 60 * 60;    // 18 * msec * sec * min
+        long now = System.currentTimeMillis();
+        if (now > timeWhenDailiesGenerated + eighteenHours) {
+            timeWhenDailiesGenerated = now;
+            // TODO: DailyManager.GetRandomDailies
+        }
     }
 }
