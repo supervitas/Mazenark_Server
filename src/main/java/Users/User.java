@@ -295,7 +295,7 @@ public class User implements UnityMongoSerializable {
         long now = System.currentTimeMillis();
         if (now > timeWhenDailiesGenerated + eighteenHours) {
             timeWhenDailiesGenerated = now;
-            // TODO: DailyManager.GetRandomDailies
+            dailies = DailyGenerator.GetRandomDailies(3, this);
         }
     }
 
