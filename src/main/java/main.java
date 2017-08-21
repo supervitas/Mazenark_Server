@@ -70,15 +70,6 @@ public class main {
                 post("/gameEnded", roomController::GameEnded);
             });
 
-            path("/game", () -> {
-                before("/*", (req, res) -> {
-                    if(!req.host().toLowerCase().contains("localhost")) {
-                        halt(401);
-                    }
-                });
-                post("/gameResults", (req, res) -> Response.OK); // todo
-            });
-
         });
 
 
