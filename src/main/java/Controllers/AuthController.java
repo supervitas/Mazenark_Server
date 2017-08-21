@@ -53,6 +53,7 @@ public class AuthController {
             res.status(400);    // If no such user => 401 Unauthorized
             return USER_EXISTS;
         }
+        userManager.LogIn(user);
 
         return OkPlusUserInfo(user);
     }
@@ -83,6 +84,7 @@ public class AuthController {
         try {
             JSONObject obj = new JSONObject(req.body());
             token = obj.getString("token");
+            System.out.println(token);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -121,6 +123,7 @@ public class AuthController {
 
     public String BecomeGuest(Request req, Response res) {
         User user = userManager.NewGuest();
+        userManager.LogIn(user);
         if (user == null) {
             res.status(400);    // Very unlikely. `user == null` may happen only if ~10000 users with name "Guest #666" exist.
             return GUEST_QUOTA_REACHED;

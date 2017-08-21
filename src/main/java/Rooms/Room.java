@@ -18,7 +18,7 @@ public class Room {
         this.parent = parent;
         this.port = port;
         this.roomID = roomId;
-        new Thread(this::CreateUnityInstance).run();
+//        new Thread(this::CreateUnityInstance).run();
     }
 
     public void SetInGame(boolean inGame){
@@ -28,17 +28,17 @@ public class Room {
     //this method is platform dependent - https://docs.unity3d.com/Manual/CommandLineArguments.html
     private void CreateUnityInstance() {
 
-        String[] command = {"./mazenark.x86_64", "-batchmode", "-nographics", "-server", "true",
+        String[] command = {"./mazenark", "-batchmode", "-nographics", "-server", "true",
                 "-port", Integer.toString(this.port), "-instanceid", Integer.toString(this.roomID)};
         ProcessBuilder probuilder = new ProcessBuilder(command).inheritIO();
 
         // change this to yours build location
-        probuilder.directory(new File("/home/frog/mazenark/linux"));
+        probuilder.directory(new File("/Users/nikolaev/Desktop/Mazenark.app/Contents/MacOS"));
 
         try {
             roomProcess = probuilder.start();
         } catch (Exception e) {
-          e.printStackTrace();
+            e.printStackTrace();
         }
     }
 

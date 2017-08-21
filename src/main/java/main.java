@@ -69,9 +69,6 @@ public class main {
                 post("/gameStarted", roomController::GameStarted);
                 post("/gameEnded", roomController::GameEnded);
             });
-
         });
-
-
     }
 }
