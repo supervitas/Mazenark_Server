@@ -98,7 +98,7 @@ public class AuthController {
             return NO_USER;
         }
 
-        return OkPlusUserInfo(user);
+        return user.ToJSON().toString();
     }
 
     public String LogOut(Request req, Response res) {
