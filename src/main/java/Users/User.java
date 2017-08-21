@@ -82,7 +82,7 @@ public class User implements UnityMongoSerializable {
         username = data.getString("username");
         password = data.getString("password");
         isGuest = data.getBoolean("isGuest");
-        timeWhenDailiesGenerated = data.getInteger("timeWhenDailiesGenerated");
+        timeWhenDailiesGenerated = data.getLong("timeWhenDailiesGenerated");
 
         List<Document> documentedStatistics = (List<Document>) data.get("statistics", ArrayList.class);
         for (Document rawRecord : documentedStatistics) {
@@ -123,7 +123,7 @@ public class User implements UnityMongoSerializable {
         String tmpUsername = "";
         String tmpPassword = "";
         boolean tmpIsGuest = false;
-        int tmpLastTimeLoggedIn = 0;
+        long tmpLastTimeLoggedIn = 0;
         ArrayList<StatisticsRecord> tmpStatistics = new ArrayList<>();
         ArrayList<Item> tmpItemsInInventory = new ArrayList<>();
         ArrayList<Item> tmpItemsInStorage = new ArrayList<>();
@@ -141,7 +141,7 @@ public class User implements UnityMongoSerializable {
             tmpIsGuest = data.getBoolean(currentFieldBeingRead);
 
             currentFieldBeingRead = "timeWhenDailiesGenerated";
-            tmpLastTimeLoggedIn = data.optInt(currentFieldBeingRead, 0);
+            tmpLastTimeLoggedIn = data.optLong(currentFieldBeingRead, 0);
 
             currentFieldBeingRead = "statistics";
             JSONArray jsonedStatistics = data.getJSONArray(currentFieldBeingRead);
