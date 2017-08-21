@@ -28,11 +28,13 @@ public class Room {
     //this method is platform dependent - https://docs.unity3d.com/Manual/CommandLineArguments.html
     private void CreateUnityInstance() {
 
+//        String[] command = {"./mazenark", "-batchmode", "-nographics", "-server", "true",
         String[] command = {"./mazenark", "-batchmode", "-nographics", "-server", "true",
                 "-port", Integer.toString(this.port), "-instanceid", Integer.toString(this.roomID)};
         ProcessBuilder probuilder = new ProcessBuilder(command).inheritIO();
 
         // change this to yours build location
+//        probuilder.directory(new File("/home/frog/mazenark/linux"));
         probuilder.directory(new File("/Users/nikolaev/Desktop/Mazenark.app/Contents/MacOS"));
 
         try {
