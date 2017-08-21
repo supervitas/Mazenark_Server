@@ -9,10 +9,13 @@ public class Room {
     private int port;
     private int playersCount = 0;
     private int roomID;
+    private Process roomProcess;
+    private RoomManager parent;
 
     private boolean inGame = false;
 
-    Room(int port, int roomId) {
+    Room(RoomManager parent, int port, int roomId) {
+        this.parent = parent;
         this.port = port;
         this.roomID = roomId;
         new Thread(this::CreateUnityInstance).run();
@@ -33,7 +36,7 @@ public class Room {
         probuilder.directory(new File("/home/frog/mazenark/linux"));
 
         try {
-            probuilder.start();
+            roomProcess = probuilder.start();
         } catch (Exception e) {
           e.printStackTrace();
         }
@@ -54,6 +57,7 @@ public class Room {
     public boolean RemovePlayer() {
         if (playersCount > 0) {
             playersCount--;
+            DeleteRoomIfZeroPlayers();
             return true;
         }
         return false;
@@ -61,6 +65,7 @@ public class Room {
 
     public void RemoveAllPlayers() {
         playersCount = 0;
+        DeleteRoomIfZeroPlayers();
     }
 
 
@@ -73,5 +78,14 @@ public class Room {
     }
     int getRoomID() {
         return roomID;
+    }
+
+    private void DeleteRoomIfZeroPlayers() {
+        if (playersCount == 0)
+            parent.DeleteRoom(this);
+    }
+
+    public void KillRoomProcess() {
+        roomProcess.destroy();
     }
 }
