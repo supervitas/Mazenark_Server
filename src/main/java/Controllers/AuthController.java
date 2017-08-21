@@ -84,7 +84,6 @@ public class AuthController {
         try {
             JSONObject obj = new JSONObject(req.body());
             token = obj.getString("token");
-            System.out.println(token);
         } catch (JSONException e) {
             e.printStackTrace();
         }
