@@ -7,7 +7,6 @@ import org.json.JSONObject;
 public class Item implements UnityMongoSerializable {
     public String id = "REPORT AS A BUG";
     public Integer chargesLeft = 0;
-    public Integer chargesTotal = 0;
 
     public Item() {
 
@@ -21,7 +20,6 @@ public class Item implements UnityMongoSerializable {
     public UnityMongoSerializable UpdateFromDocument(Document data) {
         id = data.getString("id");
         chargesLeft = data.getInteger("chargesLeft");
-        chargesTotal = data.getInteger("chargesTotal");
         return this;
     }
 
@@ -40,8 +38,7 @@ public class Item implements UnityMongoSerializable {
             currentFieldBeingRead = "chargesLeft";
             tmpChargesLeft = data.getInt(currentFieldBeingRead);
 
-            currentFieldBeingRead = "chargesTotal";
-            tmpChargesTotal = data.getInt(currentFieldBeingRead);
+
 
         } catch (JSONException e) {
             thereWereNoErrors = false;
@@ -53,7 +50,6 @@ public class Item implements UnityMongoSerializable {
         if (thereWereNoErrors) {
             id = tmpID;
             chargesLeft = tmpChargesLeft;
-            chargesTotal = tmpChargesTotal;
         }
 
         return this;
@@ -65,7 +61,6 @@ public class Item implements UnityMongoSerializable {
 
         result.append("id", id);
         result.append("chargesLeft", chargesLeft);
-        result.append("chargesTotal", chargesTotal);
 
         return result;
     }
@@ -76,7 +71,6 @@ public class Item implements UnityMongoSerializable {
         try {
             result.put("id", id);
             result.put("chargesLeft", chargesLeft);
-            result.put("chargesTotal", chargesTotal);
 
         } catch (JSONException e) {
             System.out.println("An error has occurred when converting item \"" + id + "\" to JSON! O_o");

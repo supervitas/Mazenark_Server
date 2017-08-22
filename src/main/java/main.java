@@ -48,12 +48,12 @@ public class main {
                 post("/get_data", authController::GetUserData);
 
                 // Only localhost unity server may update user data!
-                before("/update_data", (req, res) -> {
+                before("/updateData", (req, res) -> {
                     if(!req.host().toLowerCase().contains("localhost")) {
                         halt(401);
                     }
                 });
-                post("/update_data", authController::UpdateUserData);
+                post("/updateData", authController::UpdateUserData);
             });
 
 
