@@ -120,8 +120,8 @@ public class User implements UnityMongoSerializable {
     @Override
     public UnityMongoSerializable UpdateFromJSON(JSONObject data) {
         String currentFieldBeingRead = "";
-        String tmpUsername = "";
-        String tmpPassword = "";
+        String tmpNewUsername = "";
+        String tmpNewPassword = "";
         boolean tmpIsGuest = false;
         long tmpLastTimeLoggedIn = 0;
         ArrayList<StatisticsRecord> tmpStatistics = new ArrayList<>();
@@ -131,11 +131,17 @@ public class User implements UnityMongoSerializable {
 
         boolean thereWereNoErrors = true;
         try {
-            currentFieldBeingRead = "username";
-            tmpUsername = data.getString(currentFieldBeingRead);
+            currentFieldBeingRead = "token";
+            String tmpToken = data.getString(currentFieldBeingRead);
+            if (!tmpToken.equals(token)) {
+                throw new Exception("Token comparison went wrong! Assuming it was a hack. Please provide a correct token.");
+            }
 
-            currentFieldBeingRead = "password";
-            tmpPassword = data.getString(currentFieldBeingRead);
+            currentFieldBeingRead = "newUsername";
+            tmpNewUsername = data.optString(currentFieldBeingRead, "");
+
+            currentFieldBeingRead = "newPassword";
+            tmpNewPassword = data.optString(currentFieldBeingRead, "");
 
             currentFieldBeingRead = "isGuest";
             tmpIsGuest = data.getBoolean(currentFieldBeingRead);
@@ -177,7 +183,7 @@ public class User implements UnityMongoSerializable {
                 tmpDailies.add(daily);
             }
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             thereWereNoErrors = false;
             System.out.println("An error has occurred when updating user " + username + " from JSON when reading " + currentFieldBeingRead + " field.");
             System.out.println(data.toString());
@@ -186,10 +192,10 @@ public class User implements UnityMongoSerializable {
 
         if (thereWereNoErrors) {
             // Apply credentials changes only if they are not null.
-            if (!tmpUsername.equals(""))
-                username = tmpUsername;
-            if (!tmpPassword.equals(""))
-                password = tmpPassword;
+            if (!tmpNewUsername.equals(""))
+                username = tmpNewUsername;
+            if (!tmpNewPassword.equals(""))
+                password = tmpNewPassword;
 
             isGuest = tmpIsGuest;
             timeWhenDailiesGenerated = tmpLastTimeLoggedIn;
