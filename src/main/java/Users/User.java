@@ -131,12 +131,6 @@ public class User implements UnityMongoSerializable {
 
         boolean thereWereNoErrors = true;
         try {
-            currentFieldBeingRead = "token";
-            String tmpToken = data.getString(currentFieldBeingRead);
-            if (!tmpToken.equals(token)) {
-                throw new Exception("Token comparison went wrong! Assuming it was a hack. Please provide a correct token.");
-            }
-
             currentFieldBeingRead = "newUsername";
             tmpNewUsername = data.optString(currentFieldBeingRead, "");
 
@@ -149,13 +143,13 @@ public class User implements UnityMongoSerializable {
             currentFieldBeingRead = "timeWhenDailiesGenerated";
             tmpLastTimeLoggedIn = data.optLong(currentFieldBeingRead, 0);
 
-            currentFieldBeingRead = "statistics";
-            JSONArray jsonedStatistics = data.getJSONArray(currentFieldBeingRead);
-            for (int i = 0; i < jsonedStatistics.length(); i++) {
-                StatisticsRecord record = new StatisticsRecord();
-                record.UpdateFromJSON(jsonedStatistics.getJSONObject(i));
-                tmpStatistics.add(record);
-            }
+//            currentFieldBeingRead = "statistics";
+//            JSONArray jsonedStatistics = data.getJSONArray(currentFieldBeingRead);
+//            for (int i = 0; i < jsonedStatistics.length(); i++) {
+//                StatisticsRecord record = new StatisticsRecord();
+//                record.UpdateFromJSON(jsonedStatistics.getJSONObject(i));
+//                tmpStatistics.add(record);
+//            }
 
             currentFieldBeingRead = "itemsInInventory";
             JSONArray jsonedItemsInInventory = data.getJSONArray(currentFieldBeingRead);
@@ -165,23 +159,23 @@ public class User implements UnityMongoSerializable {
                 tmpItemsInInventory.add(item);
             }
 
-            currentFieldBeingRead = "itemsInStorage";
-            JSONArray jsonedItemsInStorage = data.getJSONArray(currentFieldBeingRead);
-            for (int i = 0; i < jsonedItemsInStorage.length(); i++) {
-                Item item = new Item();
-                item.UpdateFromJSON(jsonedItemsInStorage.getJSONObject(i));
-                tmpItemsInStorage.add(item);
-            }
+//            currentFieldBeingRead = "itemsInStorage";
+//            JSONArray jsonedItemsInStorage = data.getJSONArray(currentFieldBeingRead);
+//            for (int i = 0; i < jsonedItemsInStorage.length(); i++) {
+//                Item item = new Item();
+//                item.UpdateFromJSON(jsonedItemsInStorage.getJSONObject(i));
+//                tmpItemsInStorage.add(item);
+//            }
 
-            UpdateDailies();
+//            UpdateDailies();
 
-            currentFieldBeingRead = "dailies";
-            JSONArray jsonedDailies = data.getJSONArray(currentFieldBeingRead);
-            for (int i = 0; i < jsonedItemsInStorage.length(); i++) {
-                Daily daily = new Daily();
-                daily.UpdateFromJSON(jsonedDailies.getJSONObject(i));
-                tmpDailies.add(daily);
-            }
+//            currentFieldBeingRead = "dailies";
+//            JSONArray jsonedDailies = data.getJSONArray(currentFieldBeingRead);
+//            for (int i = 0; i < jsonedItemsInStorage.length(); i++) {
+//                Daily daily = new Daily();
+//                daily.UpdateFromJSON(jsonedDailies.getJSONObject(i));
+//                tmpDailies.add(daily);
+//            }
 
         } catch (Exception e) {
             thereWereNoErrors = false;
