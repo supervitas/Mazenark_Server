@@ -50,7 +50,7 @@ public class MongoDriver {
 
     public void UpdateUser(User user) {
         CompletableFuture<Boolean> result = new CompletableFuture<>();
-        users.updateOne(eq("username", user.getUsername()), user.ToDocument() ,(done, t) -> result.complete(true));
+        users.replaceOne(eq("username", user.getUsername()), user.ToDocument() ,(done, t) -> result.complete(true));
         try {
             result.get();
         } catch (InterruptedException | ExecutionException e) {
