@@ -93,13 +93,12 @@ public class AuthController {
         }
 
         User user = userManager.GetLoggedInUser(token);
-        user = userManager.GetUser(user.getUsername(), null);
         if (user == null) {
             res.status(400);    // If no such user => 401 Unauthorized
             return NO_USER;
         }
 
-        return user.ToJSON().toString();
+        return userManager.GetUser(user.getUsername(), null).ToJSON().toString();
     }
 
     public String LogOut(Request req, Response res) {
