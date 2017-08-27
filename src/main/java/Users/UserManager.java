@@ -41,7 +41,7 @@ public class UserManager {
     public User NewGuest() {
         User user = new User();
         user.setGuest(true);
-        user.setUsername("Guest #" + ++guestCounter);
+        user.setUsername("Traveler " + ++guestCounter);
         user.setPassword("Guests have no passwords.");
 
         user.setToken(GenerateSessionTokenForUser());
