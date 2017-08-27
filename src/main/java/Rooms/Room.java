@@ -18,7 +18,8 @@ public class Room {
         this.parent = parent;
         this.port = port;
         this.roomID = roomId;
-//        new Thread(this::CreateUnityInstance).run();
+        new Thread(this::CreateUnityInstance).run();
+        System.out.println("Created new room #" + roomID + " at " + port + "port.");
     }
 
     public void SetInGame(boolean inGame){
@@ -28,7 +29,7 @@ public class Room {
     //this method is platform dependent - https://docs.unity3d.com/Manual/CommandLineArguments.html
     private void CreateUnityInstance() {
 
-        String[] command = {"./mazenark.x86_x64", "-batchmode", "-nographics", "-server", "true",
+        String[] command = {"./mazenark.x86_64", "-batchmode", "-nographics", "-server", "true",
 //        String[] command = {"./mazenark", "-batchmode", "-nographics", "-server", "true",
                 "-port", Integer.toString(this.port), "-instanceid", Integer.toString(this.roomID)};
         ProcessBuilder probuilder = new ProcessBuilder(command).inheritIO();
@@ -39,6 +40,7 @@ public class Room {
 
         try {
             roomProcess = probuilder.start();
+            System.out.println("Started process for room #" + roomID + " at " + port + "port.");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,6 +49,7 @@ public class Room {
     public boolean AddPlayer() {
         if (playersCount < maxPlayers){
             playersCount++;
+            System.out.println("Adding player to room #" + roomID + " at " + port + "port. Now " + playersCount + " players.");
             return true;
         }
         return false;
@@ -59,6 +62,7 @@ public class Room {
     public boolean RemovePlayer() {
         if (playersCount > 0) {
             playersCount--;
+            System.out.println("Removing player from room #" + roomID + " at " + port + "port. Now " + playersCount + " players.");
             DeleteRoomIfZeroPlayers();
             return true;
         }
@@ -69,7 +73,6 @@ public class Room {
         playersCount = 0;
         DeleteRoomIfZeroPlayers();
     }
-
 
     int getPlayersCount() {
         return playersCount;
@@ -88,6 +91,8 @@ public class Room {
     }
 
     public void KillRoomProcess() {
+        System.out.println("Destroying room #" + roomID + " at " + port + "port.");
         roomProcess.destroy();
+        System.out.println("Destroyed");
     }
 }
