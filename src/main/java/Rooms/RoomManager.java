@@ -19,13 +19,6 @@ public class RoomManager {
 
     public RoomManager(int roomLimit) {
         this.roomLimit = roomLimit;
-        /*for (int i = 0; i < this.roomLimit; i++) {
-            if(CreateRoom(GetFreePort())) {
-
-            } else {
-                System.out.println("Error in creating rooms");
-            }
-        }*/
     }
 
     public Room GetActiveRoom() {

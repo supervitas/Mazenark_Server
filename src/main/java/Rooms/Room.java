@@ -18,8 +18,7 @@ public class Room {
         this.parent = parent;
         this.port = port;
         this.roomID = roomId;
-        new Thread(this::CreateUnityInstance).run();
-        System.out.println("Created new room #" + roomID + " at " + port + "port.");
+        new Thread(this::CreateUnityInstance).start();
     }
 
     public void SetInGame(boolean inGame){
@@ -29,27 +28,25 @@ public class Room {
     //this method is platform dependent - https://docs.unity3d.com/Manual/CommandLineArguments.html
     private void CreateUnityInstance() {
 
-        String[] command = {"./mazenark.x86_64", "-batchmode", "-nographics", "-server", "true",
-//        String[] command = {"./mazenark", "-batchmode", "-nographics", "-server", "true",
+//        String[] command = {"./mazenark.x86_64", "-batchmode", "-nographics", "-server", "true",
+        String[] command = {"./mazenark", "-batchmode", "-nographics", "-server", "true",
                 "-port", Integer.toString(this.port), "-instanceid", Integer.toString(this.roomID)};
         ProcessBuilder probuilder = new ProcessBuilder(command).inheritIO();
 
         // change this to yours build location
-        probuilder.directory(new File("/home/frog/mazenark/linux"));
-//        probuilder.directory(new File("/Users/nikolaev/Desktop/Mazenark.app/Contents/MacOS"));
+//        probuilder.directory(new File("/home/frog/mazenark/linux"));
+        probuilder.directory(new File("/Users/nikolaev/Desktop/Mazenark.app/Contents/MacOS"));
 
         try {
             roomProcess = probuilder.start();
-            System.out.println("Started process for room #" + roomID + " at " + port + "port.");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public boolean AddPlayer() {
-        if (playersCount < maxPlayers){
+        if (playersCount < maxPlayers) {
             playersCount++;
-            System.out.println("Adding player to room #" + roomID + " at " + port + "port. Now " + playersCount + " players.");
             return true;
         }
         return false;
@@ -62,7 +59,6 @@ public class Room {
     public boolean RemovePlayer() {
         if (playersCount > 0) {
             playersCount--;
-            System.out.println("Removing player from room #" + roomID + " at " + port + "port. Now " + playersCount + " players.");
             DeleteRoomIfZeroPlayers();
             return true;
         }
